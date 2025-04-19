@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 脚本：test_facelock_dataset_main.sh
-# 用途：使用 data 文件夹中的 CelebA-HQ 数据集测试 FaceLock，包括批量编辑、防御和评估
+# 脚本：test_cv_facelock_dataset_main.sh
+# 用途：使用 data 文件夹中的 CelebA-HQ 数据集测试 cv_facelock，包括批量编辑、防御和评估
 # 前提：data 文件夹位于当前目录，包含多张图片
 
 # 设置环境变量
@@ -9,11 +9,11 @@ export HF_HOME=/root/autodl-tmp/huggingface
 export HF_ENDPOINT=https://hf-mirror.com
 
 # 用户可配置参数
-DATA_DIR="/root/cv/FaceLock/data_multi"  # 数据集路径
-EDIT_DIR="/root/cv/FaceLock/celeba_hq_multi/edited"  # 批量编辑输出目录
-PROTECTED_DIR="/root/cv/FaceLock/celeba_hq_multi/protected"  # 批量防御输出目录
-PROTECTED_EDIT_DIR="/root/cv/FaceLock/celeba_hq_multi/protected_edited"  # 受保护图像编辑输出目录
-DEFEND_METHOD="facelock"
+DATA_DIR="/root/cv/cv_facelock/data"  # 数据集路径
+EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/edited"  # 批量编辑输出目录
+PROTECTED_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected"  # 批量防御输出目录
+PROTECTED_EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected_edited"  # 受保护图像编辑输出目录
+DEFEND_METHOD="cv_facelock"
 SEED=42
 NUM_INFERENCE_STEPS=100
 IMAGE_GUIDANCE_SCALE=1.5
@@ -41,7 +41,7 @@ fi
 
 # 步骤 1：批量编辑原始图像
 echo "步骤 1：对 $DATA_DIR 中的图片进行批量编辑..."
-python /root/cv/FaceLock/main_edit.py \
+python /root/cv/cv_facelock/main_edit.py \
     --src_dir="$DATA_DIR" \
     --edit_dir="$EDIT_DIR" \
     --num_inference_steps=$NUM_INFERENCE_STEPS \
@@ -55,7 +55,7 @@ fi
 
 # 步骤 2：批量保护原始图像
 echo "步骤 2：对 $DATA_DIR 中的图片应用批量防御..."
-python /root/cv/FaceLock/main_defend.py \
+python /root/cv/cv_facelock/main_defend.py \
     --image_dir="$DATA_DIR" \
     --output_dir="$PROTECTED_DIR" \
     --defend_method="$DEFEND_METHOD" \
@@ -69,9 +69,9 @@ fi
 
 # 步骤 3：批量编辑受保护的图像
 echo "步骤 3：对 $PROTECTED_DIR 中的受保护图片进行批量编辑..."
-python /root/cv/FaceLock/main_edit.py \
+python /root/cv/cv_facelock/main_edit.py \
     --src_dir="$PROTECTED_DIR/budget_$ATTACK_BUDGET" \
-    --edit_dir="$PROTECTED_EDIT_DIR" \
+    --edit_dir="$PROTECTED_EDIT_DIR/eps0" \
     --num_inference_steps=$NUM_INFERENCE_STEPS \
     --image_guidance_scale=$IMAGE_GUIDANCE_SCALE \
     --guidance_scale=$GUIDANCE_SCALE \
@@ -83,7 +83,7 @@ fi
 
 # 步骤 4：评估
 echo "步骤 4：评估防御效果..."
-cd /root/cv/FaceLock/evaluation_multi || { echo "错误：无法进入 evaluation_multi 目录"; exit 1; }
+cd /root/cv/cv_facelock/evaluation_multi || { echo "错误：无法进入 evaluation_multi 目录"; exit 1; }
 
 # 评估 PSNR
 echo "评估 PSNR..."
@@ -154,7 +154,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cd /root/cv/FaceLock
+cd /root/cv/cv_facelock
 
 echo "测试完成！结果保存在 $EDIT_DIR, $PROTECTED_DIR, $PROTECTED_EDIT_DIR"
 echo "评估结果已输出，请检查控制台或相关日志"
