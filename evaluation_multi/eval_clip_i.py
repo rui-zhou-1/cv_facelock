@@ -10,15 +10,9 @@ from transformers import CLIPProcessor, CLIPModel
 from tqdm import trange
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils import edit_prompts, get_image_embeddings, get_text_embeddings
+from utils import edit_prompts, get_image_embeddings
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
-
-def get_image_embeddings(images, clip_processor, clip_model, device="cuda"):
-    inputs = clip_processor(images=images, return_tensors="pt").to(device)
-    with torch.no_grad():
-        image_features = clip_model.get_image_features(**inputs)
-    return image_features
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
@@ -39,8 +33,7 @@ if __name__ == "__main__":
     src_image_files = sorted(os.listdir(src_dir))
     num = len(src_image_files)
     defend_edit_dirs = args.defend_edit_dirs
-    # prompt_num = len(edit_prompts)
-    prompt_num = 1 # 注意暂时修改
+    prompt_num = len(edit_prompts)
     seed = args.seed
     for x in defend_edit_dirs:
         assert os.path.exists(x)
@@ -55,8 +48,6 @@ if __name__ == "__main__":
         seed_dir = os.path.join(clean_edit_dir, f"seed{seed}")
         for i in range(prompt_num):
             prompt_dir = os.path.join(seed_dir, f"prompt{i}")
-            cur_prompt = edit_prompts[i]
-            text_embeddings = get_text_embeddings(cur_prompt, clip_processor, clip_model, device)
             assert os.path.exists(prompt_dir)
             clip_i = 0
             edit_image_files = sorted(os.listdir(prompt_dir))
@@ -65,8 +56,7 @@ if __name__ == "__main__":
                 edit_image = Image.open(os.path.join(prompt_dir, edit_image_files[k])).convert("RGB")
                 src_embeddings = get_image_embeddings(src_image, clip_processor, clip_model, device)
                 edit_embeddings = get_image_embeddings(edit_image, clip_processor, clip_model, device)
-                delta_embeddings = edit_embeddings - src_embeddings
-                similarity_score = F.cosine_similarity(delta_embeddings, text_embeddings).item()
+                similarity_score = F.cosine_similarity(edit_embeddings, src_embeddings, dim=-1).mean().item()
                 clip_i += similarity_score
             clip_i /= num
             clip_scores.append(clip_i)
@@ -77,7 +67,7 @@ if __name__ == "__main__":
 
         df = pd.DataFrame(result)
         print(df)
-        df.to_csv("clip_s_metric.csv", index=False)
+        df.to_csv("clip_i_metric.csv", index=False)
     
     for edit_dir in defend_edit_dirs:
         eps_dirs = sorted(os.listdir(edit_dir))
@@ -89,8 +79,6 @@ if __name__ == "__main__":
             seed_dir = os.path.join(cur_method, f"seed{seed}")
             for i in range(prompt_num):
                 prompt_dir = os.path.join(seed_dir, f"prompt{i}")
-                cur_prompt = edit_prompts[i]
-                text_embeddings = get_text_embeddings(cur_prompt, clip_processor, clip_model, device)
                 assert os.path.exists(prompt_dir)
                 clip_i = 0
                 edit_image_files = sorted(os.listdir(prompt_dir))
@@ -99,8 +87,7 @@ if __name__ == "__main__":
                     edit_image = Image.open(os.path.join(prompt_dir, edit_image_files[k])).convert("RGB")
                     src_embeddings = get_image_embeddings(src_image, clip_processor, clip_model, device)
                     edit_embeddings = get_image_embeddings(edit_image, clip_processor, clip_model, device)
-                    delta_embeddings = edit_embeddings - src_embeddings
-                    similarity_score = F.cosine_similarity(delta_embeddings, text_embeddings).item()
+                    similarity_score = F.cosine_similarity(edit_embeddings, src_embeddings, dim=-1).mean().item()
                     clip_i += similarity_score
                 clip_i /= num
                 clip_scores.append(clip_i)
@@ -111,4 +98,4 @@ if __name__ == "__main__":
 
             df = pd.DataFrame(result)
             print(df)
-            df.to_csv("clip_s_metric.csv", index=False)
+            df.to_csv("clip_i_metric.csv", index=False)

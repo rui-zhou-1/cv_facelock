@@ -10,17 +10,17 @@ from tqdm import trange
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import edit_prompts, load_model_by_repo_id, compute_score, pil_to_input
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 repo_id = 'minchul/cvlface_adaface_vit_base_kprpe_webface4m'
 aligner_id = 'minchul/cvlface_DFA_mobilenet'
 # load model
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 fr_model = load_model_by_repo_id(repo_id=repo_id,
-                                     save_path=f'{os.environ["HF_HOME"]}/{repo_id}',
-                                     HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                     save_path=f'{os.environ["HF_HOME"]}/{repo_id}').to(device)
 aligner = load_model_by_repo_id(repo_id=aligner_id,
-                                    save_path=f'{os.environ["HF_HOME"]}/{aligner_id}',
-                                    HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                    save_path=f'{os.environ["HF_HOME"]}/{aligner_id}').to(device)
 
 if __name__ == "__main__":
     pd.set_option("display.max_rows", None)
@@ -37,7 +37,8 @@ if __name__ == "__main__":
     src_image_files = sorted(os.listdir(src_dir))
     num = len(src_image_files)
     defend_edit_dirs = args.defend_edit_dirs
-    prompt_num = len(edit_prompts)
+    # prompt_num = len(edit_prompts)
+    prompt_num = 1 # 注意暂时修改
     seed = args.seed
     for x in defend_edit_dirs:
         assert os.path.exists(x)

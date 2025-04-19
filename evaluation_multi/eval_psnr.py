@@ -27,8 +27,7 @@ if __name__ == "__main__":
 
     clean_edit_dir = args.clean_edit_dir
     defend_edit_dirs = args.defend_edit_dirs
-    # prompt_num = len(edit_prompts)
-    prompt_num = 1 # 注意暂时修改
+    prompt_num = len(edit_prompts)
     seed = args.seed
     for x in defend_edit_dirs:
         assert os.path.exists(x)
@@ -50,6 +49,7 @@ if __name__ == "__main__":
                 print(prompt_dir, clean_prompt_dir)
                 assert os.path.exists(prompt_dir) and os.path.exists(clean_prompt_dir)
                 psnr_i = 0
+                print(prompt_dir)
                 image_files = sorted(os.listdir(prompt_dir))
                 clean_image_files = sorted(os.listdir(clean_prompt_dir))
                 num = len(image_files)

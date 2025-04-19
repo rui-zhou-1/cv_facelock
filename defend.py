@@ -81,11 +81,9 @@ def process_facelock(X, model, args):
     aligner_id = 'minchul/cvlface_DFA_mobilenet'
     device = 'cuda'
     fr_model = load_model_by_repo_id(repo_id=fr_id,
-                                    save_path=f'{os.environ["HF_HOME"]}/{fr_id}',
-                                    HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                    save_path=f'{os.environ["HF_HOME"]}/{fr_id}').to(device)
     aligner = load_model_by_repo_id(repo_id=aligner_id,
-                                    save_path=f'{os.environ["HF_HOME"]}/{aligner_id}',
-                                    HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                    save_path=f'{os.environ["HF_HOME"]}/{aligner_id}').to(device)
     lpips_fn = lpips.LPIPS(net="vgg").to(device)
 
     with torch.autocast("cuda"):
@@ -105,7 +103,7 @@ def process_facelock(X, model, args):
 
 def main(args):
     # 1. prepare the image
-    init_image = Image.open(args.input_path).convert("RGB")
+    init_image = Image.open(args.input_path).convert("RGB").resize((512, 512)) # 注意resize是后加的
     to_tensor = torchvision.transforms.ToTensor()
     if args.defend_method != "cw":
         X = pil_to_input(init_image).cuda().half()
