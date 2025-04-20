@@ -1,0 +1,1 @@
+streamlit run app.py --server.port 6006 --server.address 0.0.0.0

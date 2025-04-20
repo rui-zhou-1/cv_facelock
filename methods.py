@@ -151,3 +151,5 @@ def facelock(X, model, aligner, fr_model, lpips_fn, eps=0.03, step_size=0.01, it
         pbar.set_postfix(loss_cvl=loss_cvl.item(), loss_encoder=loss_encoder.item(), loss_lpips=loss_lpips.item(), loss=loss.item())
 
     return X_adv
+
+### facelock 算法改进
