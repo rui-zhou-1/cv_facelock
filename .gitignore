@@ -5,6 +5,5 @@ facelock/
 *.png
 !assets/*.png
 *.jpg
-*.csv
 *.out
 results/
