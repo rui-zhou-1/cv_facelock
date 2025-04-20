@@ -15,14 +15,14 @@ PROTECTED_DIR="/root/cv/cv_facelock/celeba_hq/protected"
 PROTECTED_EDIT_DIR="/root/cv/cv_facelock/celeba_hq/protected_edited"
 # SRC_DIR="/root/cv/cv_facelock/celeba_hq/src"
 PROMPT="Turn the person's hair pink"  # 使用 edit_prompts[0]
-DEFEND_METHOD="cv_facelock"
+DEFEND_METHOD="facelock"
 SEED=42
 NUM_INFERENCE_STEPS=100
 IMAGE_GUIDANCE_SCALE=1.5
 GUIDANCE_SCALE=7.5
 ATTACK_BUDGET=0.03
 STEP_SIZE=0.01
-NUM_ITERS=50
+NUM_ITERS=100
 
 # 检查 data 文件夹是否存在
 if [ ! -d "$DATA_DIR" ]; then

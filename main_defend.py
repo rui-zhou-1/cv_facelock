@@ -140,6 +140,7 @@ def main(args):
                     clamp_min=-1,
                     clamp_max=1,
                 )
+            print(X_adv)
 
         if args.clamp_min == -1:
             X_adv = (X_adv / 2 + 0.5).clamp(0, 1)

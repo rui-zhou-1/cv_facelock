@@ -9,18 +9,18 @@ export HF_HOME=/root/autodl-tmp/huggingface
 export HF_ENDPOINT=https://hf-mirror.com
 
 # 用户可配置参数
-DATA_DIR="/root/cv/cv_facelock/data"  # 数据集路径
+DATA_DIR="/root/cv/cv_facelock/data_multi"  # 数据集路径
 EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/edited"  # 批量编辑输出目录
 PROTECTED_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected"  # 批量防御输出目录
 PROTECTED_EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected_edited"  # 受保护图像编辑输出目录
-DEFEND_METHOD="cv_facelock"
+DEFEND_METHOD="facelock"
 SEED=42
 NUM_INFERENCE_STEPS=100
 IMAGE_GUIDANCE_SCALE=1.5
 GUIDANCE_SCALE=7.5
 ATTACK_BUDGET=0.03
 STEP_SIZE=0.01
-NUM_ITERS=50
+NUM_ITERS=100
 
 # 创建输出目录（确保目录存在）
 mkdir -p "$EDIT_DIR/seed$SEED/prompt0"
