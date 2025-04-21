@@ -6,3 +6,4 @@ facelock/
 !assets/*.png
 *.jpg
 *.out
+huggingface_cache

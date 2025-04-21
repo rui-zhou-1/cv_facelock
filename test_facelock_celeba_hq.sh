@@ -5,15 +5,15 @@
 # 前提：data 文件夹位于当前目录，包含多张图片
 
 # 设置环境变量
-export HF_HOME=/root/autodl-tmp/huggingface
-export HF_ENDPOINT=https://hf-mirror.com
+export HF_HOME="/Data/zr/cv/huggingface_cache"  # 自定义路径（确保可写）
+export HF_ENDPOINT="https://hf-mirror.com"      # 使用镜像源
+export CUDA_VISIBLE_DEVICES="3"                # 指定GPU
 
 # 用户可配置参数
-DATA_DIR="/root/cv/cv_facelock/data"  # 数据集路径
-EDIT_DIR="/root/cv/cv_facelock/celeba_hq/edited"
-PROTECTED_DIR="/root/cv/cv_facelock/celeba_hq/protected"
-PROTECTED_EDIT_DIR="/root/cv/cv_facelock/celeba_hq/protected_edited"
-# SRC_DIR="/root/cv/cv_facelock/celeba_hq/src"
+DATA_DIR="/Data/zr/cv/input"  # 数据集路径
+EDIT_DIR="/Data/zr/cv/output/edited"
+PROTECTED_DIR="/Data/zr/cv//output/protected"
+PROTECTED_EDIT_DIR="/Data/zr/cv//output/protected_edited"
 PROMPT="Turn the person's hair pink"  # 使用 edit_prompts[0]
 DEFEND_METHOD="facelock"
 SEED=42
@@ -59,7 +59,7 @@ for INPUT_IMAGE in $IMAGE_LIST; do
 
     # 步骤 1：编辑单张原始图像
     echo "步骤 1：对图片 $FILENAME 进行编辑..."
-    python /root/cv/cv_facelock/edit.py \
+    python /Data/zr/cv/edit.py \
         --input_path="$INPUT_IMAGE" \
         --output_path="$EDIT_DIR/${IMAGE_NAME}_edited.jpg" \
         --prompt="$PROMPT" \
@@ -74,7 +74,7 @@ for INPUT_IMAGE in $IMAGE_LIST; do
 
     # 步骤 2：保护单张原始图像
     echo "步骤 2：对图片 $FILENAME 应用防御..."
-    python /root/cv/cv_facelock/defend.py \
+    python /Data/zr/cv/defend.py \
         --input_path="$INPUT_IMAGE" \
         --output_path="$PROTECTED_DIR/${IMAGE_NAME}_protected.jpg" \
         --defend_method="$DEFEND_METHOD" \
@@ -88,7 +88,7 @@ for INPUT_IMAGE in $IMAGE_LIST; do
 
     # 步骤 3：编辑受保护的图像
     echo "步骤 3：对受保护的图片 $FILENAME 进行编辑..."
-    python /root/cv/cv_facelock/edit.py \
+    python /Data/zr/cv/edit.py \
         --input_path="$PROTECTED_DIR/${IMAGE_NAME}_protected.jpg" \
         --output_path="$PROTECTED_EDIT_DIR/${IMAGE_NAME}_protected_edited.jpg" \
         --prompt="$PROMPT" \
@@ -109,7 +109,7 @@ done
 
 # 步骤 4：评估
 echo "步骤 4：评估防御效果..."
-cd /root/cv/cv_facelock/evaluation || { echo "错误：无法进入 evaluation 目录"; exit 1; }
+cd /Data/zr/cv/evaluation || { echo "错误：无法进入 evaluation 目录"; exit 1; }
 
 # 评估 PSNR
 echo "评估 PSNR..."
@@ -180,7 +180,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cd /root/cv/cv_facelock
+cd /Data/zr/cv
 
 echo "测试完成！结果保存在 $EDIT_DIR, $PROTECTED_DIR, $PROTECTED_EDIT_DIR"
 echo "评估结果已输出，请检查控制台或相关日志"

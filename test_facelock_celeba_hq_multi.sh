@@ -5,14 +5,15 @@
 # 前提：data 文件夹位于当前目录，包含多张图片
 
 # 设置环境变量
-export HF_HOME=/root/autodl-tmp/huggingface
-export HF_ENDPOINT=https://hf-mirror.com
+#export HF_HOME=/root/autodl-tmp/huggingface
+#export HF_ENDPOINT=https://hf-mirror.com
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"  # 使用第二个GPU（如果有多个GPU）
 
 # 用户可配置参数
-DATA_DIR="/root/cv/cv_facelock/data_multi"  # 数据集路径
-EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/edited"  # 批量编辑输出目录
-PROTECTED_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected"  # 批量防御输出目录
-PROTECTED_EDIT_DIR="/root/cv/cv_facelock/celeba_hq_multi/protected_edited"  # 受保护图像编辑输出目录
+DATA_DIR="/Data/zr/cv/input_multi"  # 数据集路径
+EDIT_DIR="/Data/zr/cv//output_multi/edited"  # 批量编辑输出目录
+PROTECTED_DIR="/Data/zr/cv//output_multi/protected"  # 批量防御输出目录
+PROTECTED_EDIT_DIR="/Data/zr/cv//output_multi/protected_edited"  # 受保护图像编辑输出目录
 DEFEND_METHOD="facelock"
 SEED=42
 NUM_INFERENCE_STEPS=100
@@ -41,7 +42,7 @@ fi
 
 # 步骤 1：批量编辑原始图像
 echo "步骤 1：对 $DATA_DIR 中的图片进行批量编辑..."
-python /root/cv/cv_facelock/main_edit.py \
+python /Data/zr/cv/main_edit.py \
     --src_dir="$DATA_DIR" \
     --edit_dir="$EDIT_DIR" \
     --num_inference_steps=$NUM_INFERENCE_STEPS \
@@ -55,7 +56,7 @@ fi
 
 # 步骤 2：批量保护原始图像
 echo "步骤 2：对 $DATA_DIR 中的图片应用批量防御..."
-python /root/cv/cv_facelock/main_defend.py \
+python /Data/zr/cv/main_defend.py \
     --image_dir="$DATA_DIR" \
     --output_dir="$PROTECTED_DIR" \
     --defend_method="$DEFEND_METHOD" \
@@ -69,7 +70,7 @@ fi
 
 # 步骤 3：批量编辑受保护的图像
 echo "步骤 3：对 $PROTECTED_DIR 中的受保护图片进行批量编辑..."
-python /root/cv/cv_facelock/main_edit.py \
+python /Data/zr/cv/main_edit.py \
     --src_dir="$PROTECTED_DIR/budget_$ATTACK_BUDGET" \
     --edit_dir="$PROTECTED_EDIT_DIR/eps0" \
     --num_inference_steps=$NUM_INFERENCE_STEPS \
@@ -83,7 +84,7 @@ fi
 
 # 步骤 4：评估
 echo "步骤 4：评估防御效果..."
-cd /root/cv/cv_facelock/evaluation_multi || { echo "错误：无法进入 evaluation_multi 目录"; exit 1; }
+cd /Data/zr/cv/evaluation_multi || { echo "错误：无法进入 evaluation_multi 目录"; exit 1; }
 
 # 评估 PSNR
 echo "评估 PSNR..."
@@ -154,7 +155,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cd /root/cv/cv_facelock
+cd /Data/zr/cv
 
 echo "测试完成！结果保存在 $EDIT_DIR, $PROTECTED_DIR, $PROTECTED_EDIT_DIR"
 echo "评估结果已输出，请检查控制台或相关日志"
