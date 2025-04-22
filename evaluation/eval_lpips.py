@@ -11,6 +11,8 @@ from tqdm import trange
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import edit_prompts
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 lpips_fn = lpips.LPIPS(net='vgg').to(device)
@@ -27,7 +29,8 @@ if __name__ == "__main__":
 
     clean_edit_dir = args.clean_edit_dir
     defend_edit_dirs = args.defend_edit_dirs
-    prompt_num = len(edit_prompts)
+    # prompt_num = len(edit_prompts)
+    prompt_num = 1 # 注意暂时修改
     seed = args.seed
     for x in defend_edit_dirs:
         assert os.path.exists(x)

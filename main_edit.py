@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     for i, image_file in enumerate(image_files):
         image_path = os.path.join(src_dir, image_file)
-        src_image = Image.open(image_path).convert("RGB")
+        src_image = Image.open(image_path).convert("RGB").resize((512, 512)) # 节省内存空间
         for idx, prompt in edit_prompts.items():
             save_dir = os.path.join(edit_dir, f"seed{seed}", f"prompt{idx}")
             if not os.path.exists(save_dir):

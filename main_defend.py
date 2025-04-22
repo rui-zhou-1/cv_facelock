@@ -68,11 +68,9 @@ def main(args):
         aligner_id = 'minchul/cvlface_DFA_mobilenet'
         device = 'cuda'
         fr_model = load_model_by_repo_id(repo_id=fr_id,
-                                        save_path=f'{os.environ["HF_HOME"]}/{fr_id}',
-                                        HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                        save_path=f'{os.environ["HF_HOME"]}/{fr_id}').to(device)
         aligner = load_model_by_repo_id(repo_id=aligner_id,
-                                        save_path=f'{os.environ["HF_HOME"]}/{aligner_id}',
-                                        HF_TOKEN=os.environ['HUGGINGFACE_HUB_TOKEN']).to(device)
+                                        save_path=f'{os.environ["HF_HOME"]}/{aligner_id}').to(device)
         lpips_fn = lpips.LPIPS(net="vgg").to(device)
 
     # 3. set up and process defend
@@ -82,7 +80,7 @@ def main(args):
     for idx, image_file in enumerate(image_files):
         if (idx + 1) % 100 == 0:
             print(f"Processing {idx + 1}/{total_num}")
-        init_image = Image.open(os.path.join(image_dir, image_file)).convert("RGB")
+        init_image = Image.open(os.path.join(image_dir, image_file)).convert("RGB").resize((512, 512))
 
         # process the input
         if args.defend_method == "cw":
@@ -142,6 +140,7 @@ def main(args):
                     clamp_min=-1,
                     clamp_max=1,
                 )
+            print(X_adv)
 
         if args.clamp_min == -1:
             X_adv = (X_adv / 2 + 0.5).clamp(0, 1)

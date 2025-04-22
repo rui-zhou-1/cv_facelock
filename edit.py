@@ -27,7 +27,7 @@ def get_args_parser():
 
 def main(args):
     # 1. prepare the image
-    src_image = Image.open(args.input_path).convert("RGB")
+    src_image = Image.open(args.input_path).convert("RGB").resize((512, 512))
 
     # 2. prepare the edit model
     model = None

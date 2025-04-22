@@ -5,5 +5,5 @@ facelock/
 *.png
 !assets/*.png
 *.jpg
-*.csv
 *.out
+huggingface_cache

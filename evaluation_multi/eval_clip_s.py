@@ -39,8 +39,7 @@ if __name__ == "__main__":
     src_image_files = sorted(os.listdir(src_dir))
     num = len(src_image_files)
     defend_edit_dirs = args.defend_edit_dirs
-    # prompt_num = len(edit_prompts)
-    prompt_num = 1 # 注意暂时修改
+    prompt_num = len(edit_prompts)
     seed = args.seed
     for x in defend_edit_dirs:
         assert os.path.exists(x)
