@@ -2,7 +2,6 @@ __pycache__
 celeba
 edit_*/
 facelock/
-*.png
 !assets/*.png
 *.jpg
 *.out
@@ -10,3 +9,4 @@ huggingface_cache
 input
 output
 data
+visual*
