@@ -7,3 +7,6 @@ facelock/
 *.jpg
 *.out
 huggingface_cache
+input
+output
+data

@@ -8,15 +8,15 @@ def main():
     st.title("CV FaceLock图像编辑应用")
 
     # 设置Hugging Face环境变量
-    #os.environ["HF_HOME"] = "/root/autodl-tmp/huggingface"
-    #os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"  # 使用第二个GPU（如果有多个GPU）
+    os.environ["HF_HOME"] = "/root/autodl-tmp/huggingface"
+    os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # to修改: 指定GPU
     
     # 创建临时目录存储图片
     temp_dir = tempfile.mkdtemp()
     
     # 上传图片
-    uploaded_file = st.file_uploader("上传一张图片", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("上传一张图片", type=["jpg"])
     
     # 输入提示词
     prompt = st.text_input("输入编辑提示词", "Turn the person's hair pink")
@@ -41,7 +41,7 @@ def main():
             with st.spinner("正在进行图像防御处理..."):
                 # 运行defend.py
                 defend_cmd = [
-                    "python", "/Data/zr/cv/defend.py",
+                    "python", "defend.py",
                     "--input_path", input_path,
                     "--output_path", protected_path,
                     "--defend_method", "facelock",
@@ -59,7 +59,7 @@ def main():
             with st.spinner("正在编辑原始图片..."):
                 # 编辑原始图片
                 edit_original_cmd = [
-                    "python", "/Data/zr/cv/edit.py",
+                    "python", "edit.py",
                     "--input_path", input_path,
                     "--output_path", edited_original_path,
                     "--prompt", prompt,
@@ -77,7 +77,7 @@ def main():
             with st.spinner("正在编辑防御后图片..."):
                 # 编辑防御后图片
                 edit_protected_cmd = [
-                    "python", "/Data/zr/cv/edit.py",
+                    "python", "edit.py",
                     "--input_path", protected_path,
                     "--output_path", edited_protected_path,
                     "--prompt", prompt,
