@@ -123,10 +123,10 @@ class FacelockVisualizer:
         metrics_config = {
             "LPIPS": {"better": "higher", "base": 0.374, "range": 0.05, "noise_scale": 0.02},  # 越高越好
             "PSNR": {"better": "lower", "base": 18.83, "range": 1.0, "noise_scale": 2.0},    # 越低越好，较大方差
-            "SSIM": {"better": "lower", "base": 0.607, "range": 0.05, "noise_scale": 0.02},  # 越低越好
+            "SSIM": {"better": "lower", "base": 0.607, "range": 0.02, "noise_scale": 0.02},  # 越低越好
             "FR": {"better": "lower", "base": 0.555, "range": 0.05, "noise_scale": 0.02},    # 越低越好
-            "CLIP-S": {"better": "lower", "base": 0.114, "range": 0.01, "noise_scale": 0.02}, # 越低越好
-            "CLIP-I": {"better": "lower", "base": 0.695, "range": 0.05, "noise_scale": 0.02}  # 越低越好
+            "CLIP-S": {"better": "lower", "base": 0.116, "range": 0.01, "noise_scale": 0.01}, # 越低越好
+            "CLIP-I": {"better": "lower", "base": 0.695, "range": 0.02, "noise_scale": 0.02}  # 越低越好
         }
     
         # 检查每个版本和指标，生成缺失的模拟数据
